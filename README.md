@@ -1,4 +1,4 @@
-Terraform AWS ECS Service
+Terraform AWS ECS Load Balancer
 =========================
 
 Describe it here.
