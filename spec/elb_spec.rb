@@ -45,6 +45,10 @@ describe 'ECS Service ELB' do
     its(:health_check_timeout) { should eq(3) }
     its(:health_check_unhealthy_threshold) { should eq(2) }
     its(:health_check_healthy_threshold) { should eq(2) }
+
+    it 'outputs the ELB name' do
+      expect(Terraform.output(name: 'service_elb_name')).to(eq(subject.load_balancer_name))
+    end
   end
 
   context 'security group' do

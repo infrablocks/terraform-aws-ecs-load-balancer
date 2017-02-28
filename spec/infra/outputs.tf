@@ -9,3 +9,7 @@ output "public_subnet_ids" {
 output "private_subnet_ids" {
   value = "${module.base_network.private_subnet_ids}"
 }
+
+output "service_elb_name" {
+  value = "${module.ecs_load_balancer.service_elb_name}"
+}
