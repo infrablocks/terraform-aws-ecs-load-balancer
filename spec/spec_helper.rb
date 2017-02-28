@@ -1,6 +1,7 @@
 require 'bundler/setup'
 
 require 'awspec'
+require 'securerandom'
 
 require 'support/shared_contexts/terraform'
 
@@ -9,7 +10,7 @@ require_relative '../lib/public_ip'
 
 RSpec.configure do |config|
   deployment_identifier = ENV['DEPLOYMENT_IDENTIFIER']
-  
+
   config.example_status_persistence_file_path = '.rspec_status'
   config.expect_with :rspec do |c|
     c.syntax = :expect
@@ -22,7 +23,7 @@ RSpec.configure do |config|
 
   config.add_setting :component, default: 'test'
   config.add_setting :deployment_identifier,
-                     default: deployment_identifier || SecureRandom.hex[0, 8]
+      default: deployment_identifier || SecureRandom.hex[0, 8]
 
   config.add_setting :bastion_ami, default: 'ami-bb373ddf'
   config.add_setting :bastion_ssh_public_key_path, default: 'config/secrets/keys/bastion/ssh.public'
@@ -32,14 +33,15 @@ RSpec.configure do |config|
   config.add_setting :public_zone_id, default: 'Z2WA5EVJBZSQ3V'
   config.add_setting :private_zone_id, default: 'Z2BVA9QD5NHSW6'
 
-  config.add_setting :cluster_name, default: 'test-cluster'
-  config.add_setting :cluster_node_ssh_public_key_path, default: 'config/secrets/keys/cluster/ssh.public'
-  config.add_setting :cluster_node_instance_type, default: 't2.medium'
-  config.add_setting :cluster_node_ami, default: 'ami-3fb6bc5b'
+  config.add_setting :service_name, default: "service-1"
+  config.add_setting :service_port, default: 80
 
-  config.add_setting :cluster_minimum_size, default: 1
-  config.add_setting :cluster_maximum_size, default: 3
-  config.add_setting :cluster_desired_capacity, default: 2
+  config.add_setting :service_certificate_body, default: 'config/secrets/certificates/cert.pem'
+  config.add_setting :service_certificate_private_key, default: 'config/secrets/certificates/ssl.key'
+
+  config.add_setting :elb_internal, default: false
+  config.add_setting :elb_health_check_target, default: "HTTP:#{RSpec.configuration.service_port}/"
+  config.add_setting :elb_https_allow_cidrs, default: PublicIP.as_cidr
 
   config.before(:suite) do
     variables = RSpec.configuration
@@ -68,13 +70,15 @@ RSpec.configure do |config|
         public_zone_id: variables.public_zone_id,
         private_zone_id: variables.private_zone_id,
 
-        cluster_name: variables.cluster_name,
-        cluster_node_ssh_public_key_path: variables.cluster_node_ssh_public_key_path,
-        cluster_node_instance_type: variables.cluster_node_instance_type,
+        service_name: variables.service_name,
+        service_port: variables.service_port,
 
-        cluster_minimum_size: variables.cluster_minimum_size,
-        cluster_maximum_size: variables.cluster_maximum_size,
-        cluster_desired_capacity: variables.cluster_desired_capacity,
+        service_certificate_body: variables.service_certificate_body,
+        service_certificate_private_key: variables.service_certificate_private_key,
+
+        elb_internal: variables.elb_internal,
+        elb_health_check_target: variables.elb_health_check_target,
+        elb_https_allow_cidrs: variables.elb_https_allow_cidrs
     })
   end
 
@@ -106,13 +110,15 @@ RSpec.configure do |config|
           public_zone_id: variables.public_zone_id,
           private_zone_id: variables.private_zone_id,
 
-          cluster_name: variables.cluster_name,
-          cluster_node_ssh_public_key_path: variables.cluster_node_ssh_public_key_path,
-          cluster_node_instance_type: variables.cluster_node_instance_type,
+          service_name: variables.service_name,
+          service_port: variables.service_port,
 
-          cluster_minimum_size: variables.cluster_minimum_size,
-          cluster_maximum_size: variables.cluster_maximum_size,
-          cluster_desired_capacity: variables.cluster_desired_capacity,
+          service_certificate_body: variables.service_certificate_body,
+          service_certificate_private_key: variables.service_certificate_private_key,
+
+          elb_internal: variables.elb_internal,
+          elb_health_check_target: variables.elb_health_check_target,
+          elb_https_allow_cidrs: variables.elb_https_allow_cidrs
       })
 
       puts

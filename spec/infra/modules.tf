@@ -17,22 +17,27 @@ module "base_network" {
   private_zone_id = "${var.private_zone_id}"
 }
 
-module "ecs_cluster" {
-  source = "git@github.com:tobyclemson/terraform-aws-ecs-cluster.git//src"
-
-  region = "${var.region}"
-  vpc_id = "${module.base_network.vpc_id}"
-  private_subnet_ids = "${module.base_network.private_subnet_ids}"
-  private_network_cidr = "${var.private_network_cidr}"
+module "ecs_load_balancer" {
+  source = "../../src"
 
   component = "${var.component}"
   deployment_identifier = "${var.deployment_identifier}"
 
-  cluster_name = "${var.cluster_name}"
-  cluster_node_ssh_public_key_path = "${var.cluster_node_ssh_public_key_path}"
-  cluster_node_instance_type = "${var.cluster_node_instance_type}"
+  region = "${var.region}"
+  vpc_id = "${module.base_network.vpc_id}"
+  public_subnet_ids = "${module.base_network.public_subnet_ids}"
+  private_subnet_ids = "${module.base_network.private_subnet_ids}"
 
-  cluster_minimum_size = "${var.cluster_minimum_size}"
-  cluster_maximum_size = "${var.cluster_maximum_size}"
-  cluster_desired_capacity = "${var.cluster_desired_capacity}"
+  service_name = "${var.service_name}"
+  service_port = "${var.service_port}"
+
+  service_certificate_arn = "${aws_iam_server_certificate.service.arn}"
+
+  domain_name = "${var.domain_name}"
+  public_zone_id = "${var.public_zone_id}"
+  private_zone_id = "${var.private_zone_id}"
+
+  elb_internal = "${var.elb_internal}"
+  elb_health_check_target = "${var.elb_health_check_target}"
+  elb_https_allow_cidrs = "${var.elb_https_allow_cidrs}"
 }
