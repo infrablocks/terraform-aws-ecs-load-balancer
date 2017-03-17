@@ -22,6 +22,8 @@ The ECS load balancer consists of:
   * In the public hosted zone
   * In the private hosted zone
 
+![Diagram of infrastructure managed by this module](/docs/architecture.png?raw=true)
+
 Usage
 -----
 
