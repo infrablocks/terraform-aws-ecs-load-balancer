@@ -77,5 +77,15 @@ def terraform_vars_for(opts)
       cluster_minimum_size: 1,
       cluster_maximum_size: 3,
       cluster_desired_capacity: 2,
+
+      service_name: 'service-1',
+      service_port: 80,
+
+      service_certificate_body: 'config/secrets/certificates/cert.pem',
+      service_certificate_private_key: 'config/secrets/certificates/ssl.key',
+
+      elb_internal: false,
+      elb_health_check_target: 'HTTP:80/',
+      elb_https_allow_cidrs: PublicIP.as_cidr
   }
 end

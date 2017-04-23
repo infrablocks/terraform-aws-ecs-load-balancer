@@ -23,7 +23,7 @@ RSpec.configure do |config|
 
   config.add_setting :component, default: 'test'
   config.add_setting :deployment_identifier,
-      default: deployment_identifier || SecureRandom.hex[0, 8]
+                     default: deployment_identifier || SecureRandom.hex[0, 8]
 
   config.add_setting :bastion_ami, default: 'ami-bb373ddf'
   config.add_setting :bastion_ssh_public_key_path, default: 'config/secrets/keys/bastion/ssh.public'
@@ -93,33 +93,36 @@ RSpec.configure do |config|
 
       Terraform.clean
       Terraform.get(directory: configuration_directory)
-      Terraform.destroy(directory: configuration_directory, vars: {
-          vpc_cidr: variables.vpc_cidr,
-          region: variables.region,
-          availability_zones: variables.availability_zones,
-          private_network_cidr: variables.private_network_cidr,
+      Terraform.destroy(
+          directory: configuration_directory,
+          force: true,
+          vars: {
+              vpc_cidr: variables.vpc_cidr,
+              region: variables.region,
+              availability_zones: variables.availability_zones,
+              private_network_cidr: variables.private_network_cidr,
 
-          component: variables.component,
-          deployment_identifier: variables.deployment_identifier,
+              component: variables.component,
+              deployment_identifier: variables.deployment_identifier,
 
-          bastion_ami: variables.bastion_ami,
-          bastion_ssh_public_key_path: variables.bastion_ssh_public_key_path,
-          bastion_ssh_allow_cidrs: variables.bastion_ssh_allow_cidrs,
+              bastion_ami: variables.bastion_ami,
+              bastion_ssh_public_key_path: variables.bastion_ssh_public_key_path,
+              bastion_ssh_allow_cidrs: variables.bastion_ssh_allow_cidrs,
 
-          domain_name: variables.domain_name,
-          public_zone_id: variables.public_zone_id,
-          private_zone_id: variables.private_zone_id,
+              domain_name: variables.domain_name,
+              public_zone_id: variables.public_zone_id,
+              private_zone_id: variables.private_zone_id,
 
-          service_name: variables.service_name,
-          service_port: variables.service_port,
+              service_name: variables.service_name,
+              service_port: variables.service_port,
 
-          service_certificate_body: variables.service_certificate_body,
-          service_certificate_private_key: variables.service_certificate_private_key,
+              service_certificate_body: variables.service_certificate_body,
+              service_certificate_private_key: variables.service_certificate_private_key,
 
-          elb_internal: variables.elb_internal,
-          elb_health_check_target: variables.elb_health_check_target,
-          elb_https_allow_cidrs: variables.elb_https_allow_cidrs
-      })
+              elb_internal: variables.elb_internal,
+              elb_health_check_target: variables.elb_health_check_target,
+              elb_https_allow_cidrs: variables.elb_https_allow_cidrs
+          })
 
       puts
     end
