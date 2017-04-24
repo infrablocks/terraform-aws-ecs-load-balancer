@@ -92,6 +92,7 @@ for usage instructions.
 | Name                      | Description                                                          |
 |---------------------------|----------------------------------------------------------------------|
 | service_elb_name          | The name of the created ELB                                          |
+| service_dns_name          | The name of the service DNS record                                   |
 
 
 Development

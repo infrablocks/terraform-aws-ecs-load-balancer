@@ -13,3 +13,9 @@ output "private_subnet_ids" {
 output "service_elb_name" {
   value = "${module.ecs_load_balancer.service_elb_name}"
 }
+
+output "service_dns_name" {
+  value = "${module.ecs_load_balancer.service_dns_name}"
+}
+
+
