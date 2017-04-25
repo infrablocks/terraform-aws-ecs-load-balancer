@@ -1,7 +1,8 @@
 Terraform AWS ECS Load Balancer
 ===============================
 
-A Terraform module for building an elastic load balancer for an ECS service in AWS.
+A Terraform module for building an elastic load balancer for an ECS service in 
+AWS.
 
 The ECS load balancer requires:
 * An existing VPC
@@ -27,7 +28,8 @@ The ECS load balancer consists of:
 Usage
 -----
 
-To use the module, include something like the following in your terraform configuration:
+To use the module, include something like the following in your terraform 
+configuration:
 
 ```hcl-terraform
 module "ecs_cluster" {
@@ -58,8 +60,9 @@ module "ecs_cluster" {
 
 Executing `terraform get` will fetch the module.
 
-As mentioned above, the elastic load balancer deploys into an existing base network. 
-Whilst the base network can be created using any mechanism you like, the 
+As mentioned above, the elastic load balancer deploys into an existing base 
+network. Whilst the base network can be created using any mechanism you like, 
+the 
 [AWS Base Networking](https://github.com/tobyclemson/terraform-aws-base-networking)
 module will create everything you need. See the 
 [docs](https://github.com/tobyclemson/terraform-aws-base-networking/blob/master/README.md)
@@ -100,8 +103,8 @@ Development
 
 ### Machine Requirements
 
-In order for the build to run correctly, a few tools will need to be installed on your
-development machine:
+In order for the build to run correctly, a few tools will need to be installed 
+on your development machine:
 
 * Ruby (2.3.1)
 * Bundler
@@ -150,8 +153,8 @@ direnv allow <repository-directory>
 
 ### Running the build
 
-To provision module infrastructure, run tests and then destroy that infrastructure,
-execute:
+To provision module infrastructure, run tests and then destroy that 
+infrastructure, execute:
 
 ```bash
 ./go
@@ -180,12 +183,15 @@ ssh-keygen -t rsa -b 4096 -C integration-test@example.com -N '' -f config/secret
 Contributing
 ------------
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/tobyclemson/terraform-aws-ecs-load-balancer. 
-This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to 
-the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at 
+https://github.com/tobyclemson/terraform-aws-ecs-load-balancer. 
+This project is intended to be a safe, welcoming space for collaboration, and 
+contributors are expected to adhere to the 
+[Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 License
 -------
 
-The library is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+The library is available as open source under the terms of the 
+[MIT License](http://opensource.org/licenses/MIT).
