@@ -22,3 +22,17 @@ resource "aws_security_group" "service_elb" {
   }
 }
 
+resource "aws_security_group" "open_to_service_elb" {
+  name = "open-to-elb-${var.component}-${var.deployment_identifier}"
+  vpc_id = "${var.vpc_id}"
+  description = "${var.component}-open-to-elb"
+
+  ingress {
+    from_port = 443
+    to_port = 443
+    protocol = "tcp"
+    security_groups = [
+      "${aws_security_group.service_elb.id}"
+    ]
+  }
+}

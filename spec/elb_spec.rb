@@ -58,7 +58,7 @@ describe 'ECS Service ELB' do
     end
   end
 
-  context 'security group' do
+  context 'elb security group' do
     subject { security_group("elb-#{component}-#{deployment_identifier}") }
 
     let(:elb_allowed_cidrs) do
@@ -91,6 +91,31 @@ describe 'ECS Service ELB' do
       expect(egress_rule.to_port).to(eq(65535))
       expect(egress_rule.ip_protocol).to(eq('tcp'))
       expect(egress_rule.ip_ranges.map(&:cidr_ip)).to(eq([private_network_cidr]))
+    end
+  end
+
+  context 'open-to-elb security group' do
+    subject { security_group("open-to-elb-#{component}-#{deployment_identifier}") }
+
+    it { should exist }
+    its(:vpc_id) { should eq(vpc_id) }
+    its(:description) { should eq("#{component}-open-to-elb") }
+
+    it 'allows inbound TCP connectivity on port 443 from the ELB security group' do
+      elb_security_group = security_group("elb-#{component}-#{deployment_identifier}")
+
+      expect(subject.inbound_rule_count).to(eq(1))
+
+      permission = subject.ip_permissions.find do |permission|
+        permission.user_id_group_pairs.find do |pair|
+          pair.group_id == elb_security_group.id
+        end
+      end
+
+      expect(permission).not_to(be(nil))
+      expect(permission.from_port).to(eq(443))
+      expect(permission.to_port).to(eq(443))
+      expect(permission.ip_protocol).to(eq('tcp'))
     end
   end
 end
