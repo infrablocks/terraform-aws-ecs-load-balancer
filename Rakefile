@@ -83,6 +83,9 @@ def terraform_vars_for(opts)
       public_zone_id: 'Z2WA5EVJBZSQ3V',
       private_zone_id: 'Z2BVA9QD5NHSW6',
 
+      include_public_dns_record: 'yes',
+      include_private_dns_record: 'no',
+
       cluster_name: 'test-cluster',
       cluster_node_ssh_public_key_path: 'config/secrets/keys/cluster/ssh.public',
       cluster_node_instance_type: 't2.medium',
