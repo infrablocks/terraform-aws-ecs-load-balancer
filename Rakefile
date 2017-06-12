@@ -100,6 +100,8 @@ def terraform_vars_for(opts)
 
       elb_internal: false,
       elb_health_check_target: 'HTTP:80/',
-      elb_https_allow_cidrs: PublicIP.as_cidr
+      elb_https_allow_cidrs: PublicIP.as_cidr,
+
+      infrastructure_events_bucket: 'tobyclemson-open-source'
   }
 end

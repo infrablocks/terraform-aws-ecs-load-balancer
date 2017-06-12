@@ -3,5 +3,5 @@ output "service_elb_name" {
 }
 
 output "service_dns_name" {
-  value = "${aws_route53_record.service_public.name}"
+  value = "${var.component}-${var.deployment_identifier}.${var.domain_name}"
 }

@@ -33,6 +33,9 @@ RSpec.configure do |config|
   config.add_setting :public_zone_id, default: 'Z4Q2X3ESOZT4N'
   config.add_setting :private_zone_id, default: 'Z2CDAFD23Q10HO'
 
+  config.add_setting :include_public_dns_record, default: 'yes'
+  config.add_setting :include_private_dns_record, default: 'no'
+
   config.add_setting :service_name, default: "service-1"
   config.add_setting :service_port, default: 80
 
@@ -42,6 +45,8 @@ RSpec.configure do |config|
   config.add_setting :elb_internal, default: false
   config.add_setting :elb_health_check_target, default: "HTTP:#{RSpec.configuration.service_port}/"
   config.add_setting :elb_https_allow_cidrs, default: PublicIP.as_cidr
+
+  config.add_setting :infrastructure_events_bucket, default: 'tobyclemson-open-source'
 
   config.before(:suite) do
     variables = RSpec.configuration
@@ -70,6 +75,9 @@ RSpec.configure do |config|
         public_zone_id: variables.public_zone_id,
         private_zone_id: variables.private_zone_id,
 
+        include_public_dns_record: variables.include_public_dns_record,
+        include_private_dns_record: variables.include_private_dns_record,
+
         service_name: variables.service_name,
         service_port: variables.service_port,
 
@@ -78,7 +86,9 @@ RSpec.configure do |config|
 
         elb_internal: variables.elb_internal,
         elb_health_check_target: variables.elb_health_check_target,
-        elb_https_allow_cidrs: variables.elb_https_allow_cidrs
+        elb_https_allow_cidrs: variables.elb_https_allow_cidrs,
+
+        infrastructure_events_bucket: variables.infrastructure_events_bucket
     })
   end
 
@@ -113,6 +123,9 @@ RSpec.configure do |config|
               public_zone_id: variables.public_zone_id,
               private_zone_id: variables.private_zone_id,
 
+              include_public_dns_record: variables.include_public_dns_record,
+              include_private_dns_record: variables.include_private_dns_record,
+
               service_name: variables.service_name,
               service_port: variables.service_port,
 
@@ -121,7 +134,9 @@ RSpec.configure do |config|
 
               elb_internal: variables.elb_internal,
               elb_health_check_target: variables.elb_health_check_target,
-              elb_https_allow_cidrs: variables.elb_https_allow_cidrs
+              elb_https_allow_cidrs: variables.elb_https_allow_cidrs,
+
+              infrastructure_events_bucket: variables.infrastructure_events_bucket
           })
 
       puts

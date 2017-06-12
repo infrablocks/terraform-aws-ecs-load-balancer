@@ -21,6 +21,13 @@ variable "domain_name" {}
 variable "public_zone_id" {}
 variable "private_zone_id" {}
 
+variable "include_public_dns_record" {
+  default = "no"
+}
+variable "include_private_dns_record" {
+  default = "yes"
+}
+
 variable "elb_health_check_target" {
   default = "HTTP:80/health"
 }

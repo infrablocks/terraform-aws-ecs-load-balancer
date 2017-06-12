@@ -15,6 +15,8 @@ module "base_network" {
   domain_name = "${var.domain_name}"
   public_zone_id = "${var.public_zone_id}"
   private_zone_id = "${var.private_zone_id}"
+
+  infrastructure_events_bucket = "${var.infrastructure_events_bucket}"
 }
 
 module "ecs_load_balancer" {
@@ -36,6 +38,9 @@ module "ecs_load_balancer" {
   domain_name = "${var.domain_name}"
   public_zone_id = "${var.public_zone_id}"
   private_zone_id = "${var.private_zone_id}"
+
+  include_public_dns_record = "${var.include_public_dns_record}"
+  include_private_dns_record = "${var.include_private_dns_record}"
 
   elb_internal = "${var.elb_internal}"
   elb_health_check_target = "${var.elb_health_check_target}"
