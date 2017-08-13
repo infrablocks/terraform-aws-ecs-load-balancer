@@ -1,6 +1,8 @@
 Terraform AWS ECS Load Balancer
 ===============================
 
+[![CircleCI](https://circleci.com/gh/infrablocks/terraform-aws-ecs-load-balancer.svg?style=svg)](https://circleci.com/gh/infrablocks/terraform-aws-ecs-load-balancer)
+
 A Terraform module for building an elastic load balancer for an ECS service in 
 AWS.
 
