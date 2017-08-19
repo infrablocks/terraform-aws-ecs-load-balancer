@@ -4,14 +4,14 @@ require 'awspec/type/route53_hosted_zone'
 describe 'DNS Records' do
   include_context :terraform
 
-  let(:component) {RSpec.configuration.component}
-  let(:deployment_identifier) {RSpec.configuration.deployment_identifier}
-  let(:domain_name) {RSpec.configuration.domain_name}
+  let(:component) { vars.component }
+  let(:deployment_identifier) { vars.deployment_identifier }
+  let(:domain_name) { vars.domain_name }
 
-  let(:service_name) {RSpec.configuration.service_name}
+  let(:service_name) { vars.service_name }
 
-  let(:public_zone_id) {RSpec.configuration.public_zone_id}
-  let(:private_zone_id) {RSpec.configuration.private_zone_id}
+  let(:public_zone_id) { vars.public_zone_id }
+  let(:private_zone_id) { vars.private_zone_id }
 
   let(:load_balancer) {
     elb("elb-#{service_name}-#{component}-#{deployment_identifier}")

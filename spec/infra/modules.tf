@@ -1,5 +1,5 @@
 module "base_network" {
-  source = "git@github.com:tobyclemson/terraform-aws-base-networking.git//src"
+  source = "git@github.com:infrablocks/terraform-aws-base-networking.git//src"
 
   vpc_cidr = "${var.vpc_cidr}"
   region = "${var.region}"
@@ -20,7 +20,7 @@ module "base_network" {
 }
 
 module "ecs_load_balancer" {
-  source = "../../src"
+  source = "../../../src"
 
   component = "${var.component}"
   deployment_identifier = "${var.deployment_identifier}"

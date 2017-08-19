@@ -3,22 +3,22 @@ require 'spec_helper'
 describe 'ECS Service ELB' do
   include_context :terraform
 
-  let(:component) { RSpec.configuration.component }
-  let(:deployment_identifier) { RSpec.configuration.deployment_identifier }
-  let(:domain_name) { RSpec.configuration.domain_name }
+  let(:component) { vars.component }
+  let(:deployment_identifier) { vars.deployment_identifier }
+  let(:domain_name) { vars.domain_name }
 
-  let(:service_name) { RSpec.configuration.service_name }
+  let(:service_name) { vars.service_name }
 
-  let(:elb_internal) { RSpec.configuration.elb_internal }
-  let(:elb_health_check_target) { RSpec.configuration.elb_health_check_target }
-  let(:elb_https_allow_cidrs) { RSpec.configuration.elb_https_allow_cidrs }
+  let(:elb_internal) { vars.elb_internal }
+  let(:elb_health_check_target) { vars.elb_health_check_target }
+  let(:elb_https_allow_cidrs) { vars.elb_https_allow_cidrs }
 
-  let(:vpc_id) { Terraform.output(name: 'vpc_id') }
+  let(:vpc_id) { output_with_name('vpc_id') }
 
-  let(:public_subnet_ids) { Terraform.output(name: 'public_subnet_ids') }
-  let(:private_subnet_ids) { Terraform.output(name: 'private_subnet_ids') }
+  let(:public_subnet_ids) { output_with_name('public_subnet_ids') }
+  let(:private_subnet_ids) { output_with_name('private_subnet_ids') }
 
-  let(:private_network_cidr) { RSpec.configuration.private_network_cidr }
+  let(:private_network_cidr) { vars.private_network_cidr }
 
   context 'elb' do
     subject {
@@ -48,13 +48,15 @@ describe 'ECS Service ELB' do
     its(:health_check_healthy_threshold) { should eq(2) }
 
     it 'outputs the ELB name' do
-      expect(Terraform.output(name: 'service_elb_name')).to(eq(subject.load_balancer_name))
+      expect(output_with_name('service_elb_name'))
+          .to(eq(subject.load_balancer_name))
     end
   end
 
   context 'service record' do
     it 'outputs the service record name' do
-      expect(Terraform.output(name: 'service_dns_name')).to(eq("#{component}-#{deployment_identifier}.#{domain_name}"))
+      expect(output_with_name('service_dns_name'))
+          .to(eq("#{component}-#{deployment_identifier}.#{domain_name}"))
     end
   end
 
