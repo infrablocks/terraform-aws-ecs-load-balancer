@@ -34,7 +34,7 @@ To use the module, include something like the following in your terraform
 configuration:
 
 ```hcl-terraform
-module "ecs_cluster" {
+module "ecs_load_balancer" {
   source = "git@github.com:tobyclemson/terraform-aws-load-balancer.git//src"
 
   region = "eu-west-2"

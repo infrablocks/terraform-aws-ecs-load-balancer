@@ -14,7 +14,7 @@ describe 'DNS Records' do
   let(:private_zone_id) { vars.private_zone_id }
 
   let(:load_balancer) {
-    elb("elb-#{service_name}-#{component}-#{deployment_identifier}")
+    elb(output_with_name('service_elb_name'))
   }
 
   let(:public_hosted_zone) {
@@ -25,7 +25,7 @@ describe 'DNS Records' do
     route53_hosted_zone(private_zone_id)
   }
 
-  context "public" do
+  context 'public' do
     it 'creates a public dns entry when requested' do
       expect(public_hosted_zone)
           .to(have_record_set("#{component}-#{deployment_identifier}.#{domain_name}.")
@@ -35,7 +35,7 @@ describe 'DNS Records' do
     end
   end
 
-  context "private" do
+  context 'private' do
     it 'creates a private dns entry when requested' do
       expect(private_hosted_zone)
           .not_to(have_record_set("#{component}-#{deployment_identifier}.#{domain_name}.")

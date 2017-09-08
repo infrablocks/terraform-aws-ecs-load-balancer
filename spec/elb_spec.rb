@@ -13,6 +13,8 @@ describe 'ECS Service ELB' do
   let(:elb_health_check_target) { vars.elb_health_check_target }
   let(:elb_https_allow_cidrs) { vars.elb_https_allow_cidrs }
 
+  let(:elb_name) { output_with_name('service_elb_name') }
+
   let(:vpc_id) { output_with_name('vpc_id') }
 
   let(:public_subnet_ids) { output_with_name('public_subnet_ids') }
@@ -22,7 +24,7 @@ describe 'ECS Service ELB' do
 
   context 'elb' do
     subject {
-      elb("elb-#{service_name}-#{component}-#{deployment_identifier}")
+      elb(elb_name)
     }
 
     let(:expected_subnets) do
@@ -46,11 +48,6 @@ describe 'ECS Service ELB' do
     its(:health_check_timeout) { should eq(3) }
     its(:health_check_unhealthy_threshold) { should eq(2) }
     its(:health_check_healthy_threshold) { should eq(2) }
-
-    it 'outputs the ELB name' do
-      expect(output_with_name('service_elb_name'))
-          .to(eq(subject.load_balancer_name))
-    end
   end
 
   context 'service record' do

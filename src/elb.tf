@@ -1,12 +1,15 @@
 resource "aws_elb" "service" {
-  name = "elb-${var.service_name}-${var.component}-${var.deployment_identifier}"
   subnets = ["${split(",", var.elb_internal == "true" ? var.private_subnet_ids : var.public_subnet_ids)}"]
-
-  internal = "${var.elb_internal}"
-
   security_groups = [
     "${aws_security_group.service_elb.id}"
   ]
+
+  internal = "${var.elb_internal}"
+
+  cross_zone_load_balancing = true
+  idle_timeout = 60
+  connection_draining = true
+  connection_draining_timeout = 60
 
   listener {
     instance_port = "${var.service_port}"
@@ -23,11 +26,6 @@ resource "aws_elb" "service" {
     target = "${var.elb_health_check_target}"
     interval = 30
   }
-
-  cross_zone_load_balancing = true
-  idle_timeout = 60
-  connection_draining = true
-  connection_draining_timeout = 60
 
   tags {
     Name = "elb-${var.component}-${var.deployment_identifier}"
