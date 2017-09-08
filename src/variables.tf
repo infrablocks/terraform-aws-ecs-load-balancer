@@ -7,12 +7,8 @@ variable "subnet_ids" {
 variable "component" {}
 variable "deployment_identifier" {}
 
-variable "service_name" {
-  default = ""
-}
-variable "service_port" {
-  default = ""
-}
+variable "service_name" {}
+variable "service_port" {}
 variable "service_certificate_arn" {}
 
 variable "domain_name" {}

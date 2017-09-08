@@ -8,7 +8,7 @@ AWS.
 
 The ECS load balancer requires:
 * An existing VPC
-* Some existing public and private subnets
+* Some existing subnets
 * A domain name and public and private hosted zones
  
 The ECS load balancer consists of:
@@ -18,9 +18,10 @@ The ECS load balancer consists of:
   * Using cross zone load balancing across the provided subnet IDs
   * Either internal or internet-facing depending on the provided parameter
   * With a health check using the specified target
-* A security group allowing access to the load balancer on port 443
-  * From the private network CIDR
-  * From the specified CIDRs
+* A security group allowing access to the load balancer on port 443 from the 
+  specified CIDRs
+* A security group for use by targets allowing access from the load balancer 
+  on the service port.
 * A DNS entry for the service
   * In the public hosted zone if requested
   * In the private hosted zone if requested
@@ -39,9 +40,7 @@ module "ecs_load_balancer" {
 
   region = "eu-west-2"
   vpc_id = "vpc-fb7dc365"
-  public_subnet_ids = "subnet-ae4533c4,subnet-443e6b12"
-  private_subnet_ids = "subnet-eb32c271,subnet-64872d1f"
-  private_network_cidr = "192.168.0.0/16"
+  subnet_ids = "subnet-ae4533c4,subnet-443e6b12"
   
   component = "important-component"
   deployment_identifier = "production"
@@ -54,9 +53,17 @@ module "ecs_load_balancer" {
   public_zone_id = "Z1WA3EVJBXSQ2V"
   private_zone_id = "Z3CVA9QD5NHSW3"
   
-  elb_health_check_target = "TCP:11211"
-  elb_internal = false
-  elb_https_allow_cidrs = "100.10.10.0/24,200.20.0.0/16"
+  health_check_target = "TCP:11211"
+  
+  allow_cidrs = [
+    "100.10.10.0/24",
+    "200.20.0.0/16"
+  ]
+  
+  include_public_dns_record = "yes"
+  include_private_dns_record = "yes"
+  
+  expose_to_public_internet = "yes"
 }
 ```
 
@@ -73,31 +80,34 @@ for usage instructions.
 
 ### Inputs
 
-| Name                                 | Description                                                    | Default            | Required |
-|--------------------------------------|----------------------------------------------------------------|:------------------:|:--------:|
-| region                               | The region into which to deploy the load balancer              | -                  | yes      |
-| vpc_id                               | The ID of the VPC into which to deploy the load balancer       | -                  | yes      |
-| public_subnet_ids                    | The IDs of the public subnets for the ELB if it is public      | -                  | yes      |
-| private_subnet_ids                   | The IDs of the private subnets for the ELB if it is internal   | -                  | yes      |
-| private_network_cidr                 | The CIDR of the private network allowed access to the ELB      | 10.0.0.0/8         | yes      |
-| component                            | The component for which the load balancer is being created     | -                  | yes      |
-| deployment_identifier                | An identifier for this instantiation                           | -                  | yes      |
-| service_name                         | The name of the service for which the ELB is being created     | default            | yes      |
-| service_port                         | The port on which the service containers are listening         | -                  | yes      |
-| service_certificate_arn              | The ARN of a certificate to use for TLS terminating at the ELB | t2.medium          | yes      |
-| domain_name                          | The domain name of the supplied Route 53 zones                 | -                  | yes      |
-| public_zone_id                       | The ID of the public Route 53 zone                             | -                  | yes      |
-| private_zone_id                      | The ID of the private Route 53 zone                            | -                  | yes      |
-| elb_health_check_target              | The target to use for health checks                            | HTTP:80/ping       | yes      |
-| elb_internal                         | Whether or not the ELB is internal only                        | true               | yes      |
-| elb_https_allow_cidrs                | The CIDRs from which the ELB is reachable                      | -                  | yes      |
+| Name                                 | Description                                                    | Default             | Required |
+|--------------------------------------|----------------------------------------------------------------|:-------------------:|:--------:|
+| region                               | The region into which to deploy the load balancer              | -                   | yes      |
+| vpc_id                               | The ID of the VPC into which to deploy the load balancer       | -                   | yes      |
+| subnet_ids                           | The IDs of the subnets for the ELB to deploy into              | -                   | yes      |
+| component                            | The component for which the load balancer is being created     | -                   | yes      |
+| deployment_identifier                | An identifier for this instantiation                           | -                   | yes      |
+| service_name                         | The name of the service for which the ELB is being created     | default             | yes      |
+| service_port                         | The port on which the service containers are listening         | -                   | yes      |
+| service_certificate_arn              | The ARN of a certificate to use for TLS terminating at the ELB | -                   | yes      |
+| domain_name                          | The domain name of the supplied Route 53 zones                 | -                   | yes      |
+| public_zone_id                       | The ID of the public Route 53 zone                             | -                   | yes      |
+| private_zone_id                      | The ID of the private Route 53 zone                            | -                   | yes      |
+| health_check_target                  | The target to use for health checks                            | HTTP:80/ping        | yes      |
+| allow_cidrs                          | A list of CIDRs from which the ELB is reachable                | -                   | yes      |
+| egress_cidrs                         | A list of CIDRs which the ELB can reach                        | the CIDR of the VPC | no       |
+| include_public_dns_record            | Whether or not to create a public DNS record ("yes" or "no")   | "no"                | yes      |
+| include_private_dns_record           | Whether or not to create a private DNS record ("yes" or "no")  | "yes"               | yes      |
+| expose_to_public_internet            | Whether or not the ELB is publicly accessible ("yes" or "no")  | "no"                | yes      |
 
 ### Outputs
 
-| Name                      | Description                                                          |
-|---------------------------|----------------------------------------------------------------------|
-| service_elb_name          | The name of the created ELB                                          |
-| service_dns_name          | The name of the service DNS record                                   |
+| Name                                    | Description                                                          |
+|-----------------------------------------|----------------------------------------------------------------------|
+| name                                    | The name of the created ELB                                          |
+| address                                 | The name of the service DNS record                                   |
+| security_group_id                       | The ID of the security group associated with the ELB                 |
+| open_to_load_balancer_security_group_id | The ID of the security group allowing access from the ELB            |
 
 
 Development
@@ -165,13 +175,13 @@ infrastructure, execute:
 To provision the module test contents:
 
 ```bash
-./go provision:aws[<deployment_identifier>]
+./go provision[<deployment_identifier>]
 ```
 
 To destroy the module test contents:
 
 ```bash
-./go destroy:aws[<deployment_identifier>]
+./go destroy[<deployment_identifier>]
 ```
 
 ### Common Tasks
@@ -186,7 +196,7 @@ Contributing
 ------------
 
 Bug reports and pull requests are welcome on GitHub at 
-https://github.com/tobyclemson/terraform-aws-ecs-load-balancer. 
+https://github.com/infrablocks/terraform-aws-ecs-load-balancer. 
 This project is intended to be a safe, welcoming space for collaboration, and 
 contributors are expected to adhere to the 
 [Contributor Covenant](http://contributor-covenant.org) code of conduct.
