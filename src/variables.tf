@@ -1,9 +1,7 @@
 variable "region" {}
 variable "vpc_id" {}
-variable "public_subnet_ids" {}
-variable "private_subnet_ids" {}
-variable "private_network_cidr" {
-  default = "10.0.0.0/8"
+variable "subnet_ids" {
+  type = "list"
 }
 
 variable "component" {}
@@ -21,6 +19,18 @@ variable "domain_name" {}
 variable "public_zone_id" {}
 variable "private_zone_id" {}
 
+variable "health_check_target" {
+  default = "HTTP:80/health"
+}
+variable "allow_cidrs" {
+  type = "list"
+}
+
+variable "egress_cidrs" {
+  type = "list"
+  default = []
+}
+
 variable "include_public_dns_record" {
   default = "no"
 }
@@ -28,12 +38,6 @@ variable "include_private_dns_record" {
   default = "yes"
 }
 
-variable "elb_health_check_target" {
-  default = "HTTP:80/health"
-}
-variable "elb_internal" {
-  default = true
-}
-variable "elb_https_allow_cidrs" {
-  default = ""
+variable "expose_to_public_internet" {
+  default = "no"
 }

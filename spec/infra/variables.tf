@@ -14,8 +14,7 @@ variable "domain_name" {}
 variable "public_zone_id" {}
 variable "private_zone_id" {}
 
-variable "include_public_dns_record" {}
-variable "include_private_dns_record" {}
+variable "infrastructure_events_bucket" {}
 
 variable "service_name" {}
 variable "service_port" {}
@@ -23,8 +22,16 @@ variable "service_port" {}
 variable "service_certificate_body" {}
 variable "service_certificate_private_key" {}
 
-variable "elb_internal" {}
-variable "elb_health_check_target" {}
-variable "elb_https_allow_cidrs" {}
+variable "health_check_target" {}
 
-variable "infrastructure_events_bucket" {}
+variable "allow_cidrs" {
+  type = "list"
+}
+variable "egress_cidrs" {
+  type = "list"
+}
+
+variable "include_public_dns_record" {}
+variable "include_private_dns_record" {}
+
+variable "expose_to_public_internet" {}

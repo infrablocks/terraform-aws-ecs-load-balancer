@@ -1,10 +1,10 @@
 resource "aws_elb" "service" {
-  subnets = ["${split(",", var.elb_internal == "true" ? var.private_subnet_ids : var.public_subnet_ids)}"]
+  subnets = ["${var.subnet_ids}"]
   security_groups = [
-    "${aws_security_group.service_elb.id}"
+    "${aws_security_group.load_balancer.id}"
   ]
 
-  internal = "${var.elb_internal}"
+  internal = "${var.expose_to_public_internet == "yes" ? false : true}"
 
   cross_zone_load_balancing = true
   idle_timeout = 60
@@ -23,14 +23,14 @@ resource "aws_elb" "service" {
     healthy_threshold = 2
     unhealthy_threshold = 2
     timeout = 3
-    target = "${var.elb_health_check_target}"
+    target = "${var.health_check_target}"
     interval = 30
   }
 
   tags {
     Name = "elb-${var.component}-${var.deployment_identifier}"
     Component = "${var.component}"
-    DevelopmentIdentifier = "${var.deployment_identifier}"
+    DeploymentIdentifier = "${var.deployment_identifier}"
     Service = "${var.service_name}"
   }
 }

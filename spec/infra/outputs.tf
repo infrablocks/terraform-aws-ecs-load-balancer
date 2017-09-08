@@ -2,20 +2,26 @@ output "vpc_id" {
   value = "${module.base_network.vpc_id}"
 }
 
-output "public_subnet_ids" {
+output "vpc_cidr" {
+  value = "${module.base_network.vpc_cidr}"
+}
+
+output "subnet_ids" {
   value = "${module.base_network.public_subnet_ids}"
 }
 
-output "private_subnet_ids" {
-  value = "${module.base_network.private_subnet_ids}"
+output "name" {
+  value = "${module.ecs_load_balancer.name}"
 }
 
-output "service_elb_name" {
-  value = "${module.ecs_load_balancer.service_elb_name}"
+output "address" {
+  value = "${module.ecs_load_balancer.address}"
 }
 
-output "service_dns_name" {
-  value = "${module.ecs_load_balancer.service_dns_name}"
+output "security_group_id" {
+  value = "${module.ecs_load_balancer.security_group_id}"
 }
 
-
+output "open_to_load_balancer_security_group_id" {
+  value = "${module.ecs_load_balancer.open_to_load_balancer_security_group_id}"
+}

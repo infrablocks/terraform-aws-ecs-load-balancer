@@ -15,8 +15,7 @@ domain_name: 'greasedscone.uk'
 public_zone_id: 'Z4Q2X3ESOZT4N'
 private_zone_id: 'Z2CDAFD23Q10HO'
 
-include_public_dns_record: 'yes'
-include_private_dns_record: 'no'
+infrastructure_events_bucket: 'tobyclemson-open-source'
 
 service_name: 'service-1'
 service_port: 80
@@ -24,8 +23,12 @@ service_port: 80
 service_certificate_body: '<%= @project_directory %>/config/secrets/certificates/cert.pem'
 service_certificate_private_key: '<%= @project_directory %>/config/secrets/certificates/ssl.key'
 
-elb_internal: false
-elb_health_check_target: "HTTP:80/"
-elb_https_allow_cidrs: "<%= @public_ip %>/32"
+health_check_target: "HTTP:80/"
 
-infrastructure_events_bucket: 'tobyclemson-open-source'
+allow_cidrs: '["<%= @public_ip %>/32"]'
+egress_cidrs: '[]'
+
+include_public_dns_record: 'no'
+include_private_dns_record: 'yes'
+
+expose_to_public_internet: 'no'

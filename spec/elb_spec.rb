@@ -1,120 +1,95 @@
 require 'spec_helper'
 
 describe 'ECS Service ELB' do
-  include_context :terraform
-
   let(:component) { vars.component }
   let(:deployment_identifier) { vars.deployment_identifier }
-  let(:domain_name) { vars.domain_name }
 
-  let(:service_name) { vars.service_name }
+  let(:name) { output_with_name('name') }
 
-  let(:elb_internal) { vars.elb_internal }
-  let(:elb_health_check_target) { vars.elb_health_check_target }
-  let(:elb_https_allow_cidrs) { vars.elb_https_allow_cidrs }
+  subject {elb(name)}
 
-  let(:elb_name) { output_with_name('service_elb_name') }
+  it { should exist }
+  its(:subnets) { should contain_exactly(*output_with_name('subnet_ids').split(',')) }
+  its(:scheme) { should eq('internal') }
 
-  let(:vpc_id) { output_with_name('vpc_id') }
+  its(:health_check_target) { should eq(vars.health_check_target) }
+  its(:health_check_interval) { should eq(30) }
+  its(:health_check_timeout) { should eq(3) }
+  its(:health_check_unhealthy_threshold) { should eq(2) }
+  its(:health_check_healthy_threshold) { should eq(2) }
 
-  let(:public_subnet_ids) { output_with_name('public_subnet_ids') }
-  let(:private_subnet_ids) { output_with_name('private_subnet_ids') }
+  it {should have_listener(
+                 protocol: 'HTTPS',
+                 port: 443,
+                 instance_protocol: 'HTTP',
+                 instance_port: vars.service_port)}
 
-  let(:private_network_cidr) { vars.private_network_cidr }
-
-  context 'elb' do
-    subject {
-      elb(elb_name)
-    }
-
-    let(:expected_subnets) do
-      elb_internal ?
-          private_subnet_ids.split(',') :
-          public_subnet_ids.split(',')
-    end
-
-    let(:expected_scheme) do
-      elb_internal ?
-          'internal' :
-          'internet-facing'
-    end
-
-    it { should exist }
-
-    its(:scheme) { should eq(expected_scheme) }
-    its(:subnets) { should contain_exactly(*expected_subnets) }
-    its(:health_check_target) { should eq(elb_health_check_target) }
-    its(:health_check_interval) { should eq(30) }
-    its(:health_check_timeout) { should eq(3) }
-    its(:health_check_unhealthy_threshold) { should eq(2) }
-    its(:health_check_healthy_threshold) { should eq(2) }
+  it 'is associated with the load balancer security group' do
+    expect(subject)
+        .to(have_security_group(output_with_name('security_group_id')))
   end
 
-  context 'service record' do
-    it 'outputs the service record name' do
-      expect(output_with_name('service_dns_name'))
-          .to(eq("#{component}-#{deployment_identifier}.#{domain_name}"))
+  context 'tags' do
+    subject do
+      elb_client
+          .describe_tags(load_balancer_names: [name])
+          .tag_descriptions[0]
+          .tags
+          .map(&:to_h)
     end
+
+    it {should include({key: 'Name',
+                        value: "elb-#{component}-#{deployment_identifier}"})}
+    it {should include({key: 'Component', value: component})}
+    it {should include({key: 'DeploymentIdentifier',
+                        value: deployment_identifier})}
+    it {should include({key: 'Service',
+                        value: vars.service_name})}
   end
 
-  context 'elb security group' do
-    subject { security_group("elb-#{component}-#{deployment_identifier}") }
-
-    let(:elb_allowed_cidrs) do
-      elb_internal ?
-          [private_network_cidr] :
-          [elb_https_allow_cidrs]
+  context 'attributes' do
+    subject do
+      elb_client
+          .describe_load_balancer_attributes(load_balancer_name: name)
+          .load_balancer_attributes
     end
 
-    it { should exist }
-    its(:vpc_id) { should eq(vpc_id) }
-    its(:description) { should eq("#{component}-elb") }
+    it 'enables cross zone load balancing' do
+      cross_zone_attribute = subject.cross_zone_load_balancing.to_h
 
-    it 'allows inbound TCP connectivity on all ports from any address within the Service' do
-      expect(subject.inbound_rule_count).to(eq(1))
-
-      ingress_rule = subject.ip_permissions.first
-
-      expect(ingress_rule.from_port).to(eq(443))
-      expect(ingress_rule.to_port).to(eq(443))
-      expect(ingress_rule.ip_protocol).to(eq('tcp'))
-      expect(ingress_rule.ip_ranges.map(&:cidr_ip)).to(eq([elb_https_allow_cidrs]))
+      expect(cross_zone_attribute).to eq({enabled: true})
     end
 
-    it 'allows outbound TCP connectivity on all ports and protocols anywhere' do
-      expect(subject.outbound_rule_count).to(be(1))
+    it 'enables connection draining with a timeout of 60 seconds' do
+      connection_draining_attribute = subject.connection_draining
 
-      egress_rule = subject.ip_permissions_egress.first
+      expect(connection_draining_attribute.enabled)
+          .to(eq(true))
+      expect(connection_draining_attribute.timeout)
+          .to(eq(60))
+    end
 
-      expect(egress_rule.from_port).to(eq(1))
-      expect(egress_rule.to_port).to(eq(65535))
-      expect(egress_rule.ip_protocol).to(eq('tcp'))
-      expect(egress_rule.ip_ranges.map(&:cidr_ip)).to(eq([private_network_cidr]))
+    it 'has an idle timeout of 60 seconds' do
+      connection_settings_attribute = subject.connection_settings
+
+      expect(connection_settings_attribute.idle_timeout)
+          .to(eq(60))
     end
   end
 
-  context 'open-to-elb security group' do
-    subject { security_group("open-to-elb-#{component}-#{deployment_identifier}") }
-
-    it { should exist }
-    its(:vpc_id) { should eq(vpc_id) }
-    its(:description) { should eq("#{component}-open-to-elb") }
-
-    it 'allows inbound TCP connectivity on port 443 from the ELB security group' do
-      elb_security_group = security_group("elb-#{component}-#{deployment_identifier}")
-
-      expect(subject.inbound_rule_count).to(eq(1))
-
-      permission = subject.ip_permissions.find do |permission|
-        permission.user_id_group_pairs.find do |pair|
-          pair.group_id == elb_security_group.id
-        end
-      end
-
-      expect(permission).not_to(be(nil))
-      expect(permission.from_port).to(eq(443))
-      expect(permission.to_port).to(eq(443))
-      expect(permission.ip_protocol).to(eq('tcp'))
+  context 'when ELB is exposed to the public internet' do
+    before(:all) do
+      reprovision(expose_to_public_internet: 'yes')
     end
+
+    its(:scheme) {should eq('internet-facing')}
+  end
+
+  context 'when ELB is not exposed to the public internet' do
+    before(:all) do
+      reprovision(expose_to_public_internet: 'no')
+    end
+
+    its(:scheme) {should eq('internal')}
   end
 end

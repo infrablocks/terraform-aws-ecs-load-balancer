@@ -27,8 +27,7 @@ module "ecs_load_balancer" {
 
   region = "${var.region}"
   vpc_id = "${module.base_network.vpc_id}"
-  public_subnet_ids = "${module.base_network.public_subnet_ids}"
-  private_subnet_ids = "${module.base_network.private_subnet_ids}"
+  subnet_ids = "${split(",", module.base_network.public_subnet_ids)}"
 
   service_name = "${var.service_name}"
   service_port = "${var.service_port}"
@@ -39,10 +38,13 @@ module "ecs_load_balancer" {
   public_zone_id = "${var.public_zone_id}"
   private_zone_id = "${var.private_zone_id}"
 
+  health_check_target = "${var.health_check_target}"
+
+  allow_cidrs = "${var.allow_cidrs}"
+  egress_cidrs = "${var.egress_cidrs}"
+
   include_public_dns_record = "${var.include_public_dns_record}"
   include_private_dns_record = "${var.include_private_dns_record}"
 
-  elb_internal = "${var.elb_internal}"
-  elb_health_check_target = "${var.elb_health_check_target}"
-  elb_https_allow_cidrs = "${var.elb_https_allow_cidrs}"
+  expose_to_public_internet = "${var.expose_to_public_internet}"
 }
