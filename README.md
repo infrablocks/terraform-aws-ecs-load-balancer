@@ -16,14 +16,14 @@ The ECS load balancer consists of:
   * Listening as HTTPS on port 443 using the provided certificate
   * Forwarding as HTTP on the provided service port to any registered instances
   * Using cross zone load balancing across the provided subnet IDs
-  * Either internal or external depending on the provided parameter
+  * Either internal or internet-facing depending on the provided parameter
   * With a health check using the specified target
 * A security group allowing access to the load balancer on port 443
   * From the private network CIDR
   * From the specified CIDRs
 * A DNS entry for the service
-  * In the public hosted zone
-  * In the private hosted zone
+  * In the public hosted zone if requested
+  * In the private hosted zone if requested
 
 ![Diagram of infrastructure managed by this module](/docs/architecture.png?raw=true)
 
@@ -35,7 +35,7 @@ configuration:
 
 ```hcl-terraform
 module "ecs_load_balancer" {
-  source = "git@github.com:tobyclemson/terraform-aws-load-balancer.git//src"
+  source = "git@github.com:infrablocks/terraform-aws-load-balancer.git//src"
 
   region = "eu-west-2"
   vpc_id = "vpc-fb7dc365"
