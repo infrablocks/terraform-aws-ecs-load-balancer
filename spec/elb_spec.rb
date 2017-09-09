@@ -24,6 +24,16 @@ describe 'ECS Service ELB' do
                  instance_protocol: 'HTTP',
                  instance_port: vars.service_port)}
 
+  it 'outputs the zone ID' do
+    expect(output_with_name('zone_id'))
+        .to(eq(subject.canonical_hosted_zone_name_id))
+  end
+
+  it 'outputs the DNS name' do
+    expect(output_with_name('dns_name'))
+        .to(eq(subject.dns_name))
+  end
+
   it 'is associated with the load balancer security group' do
     expect(subject)
         .to(have_security_group(output_with_name('security_group_id')))
