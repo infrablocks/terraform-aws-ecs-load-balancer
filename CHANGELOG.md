@@ -1,3 +1,9 @@
+## 0.1.9 (September 9th, 2017) 
+
+IMPROVEMENTS:
+
+* The zone ID and the DNS name of the ELB are now output from the module.
+
 ## 0.1.8 (September 8th, 2017)
 
 BACKWARDS INCOMPATIBILITIES / NOTES:
