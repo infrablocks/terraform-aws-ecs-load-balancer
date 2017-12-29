@@ -26,7 +26,7 @@ The ECS load balancer consists of:
   * In the public hosted zone if requested
   * In the private hosted zone if requested
 
-![Diagram of infrastructure managed by this module](/docs/architecture.png?raw=true)
+![Diagram of infrastructure managed by this module](https://raw.githubusercontent.com/infrablocks/terraform-aws-ecs-load-balancer/master/docs/architecture.png)
 
 Usage
 -----
@@ -36,7 +36,8 @@ configuration:
 
 ```hcl-terraform
 module "ecs_load_balancer" {
-  source = "git@github.com:infrablocks/terraform-aws-load-balancer.git//src"
+  source = "infrablocks/ecs-load-balancer/aws"
+    version = "0.1.10"
 
   region = "eu-west-2"
   vpc_id = "vpc-fb7dc365"
@@ -66,8 +67,6 @@ module "ecs_load_balancer" {
   expose_to_public_internet = "yes"
 }
 ```
-
-Executing `terraform get` will fetch the module.
 
 As mentioned above, the elastic load balancer deploys into an existing base 
 network. Whilst the base network can be created using any mechanism you like, 
@@ -99,6 +98,7 @@ for usage instructions.
 | include_public_dns_record            | Whether or not to create a public DNS record ("yes" or "no")   | "no"                | yes      |
 | include_private_dns_record           | Whether or not to create a private DNS record ("yes" or "no")  | "yes"               | yes      |
 | expose_to_public_internet            | Whether or not the ELB is publicly accessible ("yes" or "no")  | "no"                | yes      |
+
 
 ### Outputs
 
@@ -174,17 +174,30 @@ infrastructure, execute:
 ./go
 ```
 
-To provision the module test contents:
+To provision the module prerequisites:
 
 ```bash
-./go provision[<deployment_identifier>]
+./go deployment:prerequisites:provision[<deployment_identifier>]
 ```
 
-To destroy the module test contents:
+To provision the module contents:
 
 ```bash
-./go destroy[<deployment_identifier>]
+./go deployment:harness:provision[<deployment_identifier>]
 ```
+
+To destroy the module contents:
+
+```bash
+./go deployment:harness:destroy[<deployment_identifier>]
+```
+
+To destroy the module prerequisites:
+
+```bash
+./go deployment:prerequisites:destroy[<deployment_identifier>]
+```
+
 
 ### Common Tasks
 

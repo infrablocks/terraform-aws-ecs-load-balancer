@@ -7,7 +7,7 @@ describe 'DNS Records' do
   let(:component) {vars.component}
   let(:deployment_identifier) {vars.deployment_identifier}
 
-  let(:name) {output_with_name('name')}
+  let(:name) {output_for(:harness, 'name')}
 
   let(:domain_name) {vars.domain_name}
 
@@ -22,7 +22,7 @@ describe 'DNS Records' do
   }
 
   it 'outputs the address' do
-    expect(output_with_name('address'))
+    expect(output_for(:harness, 'address'))
         .to(eq("#{component}-#{deployment_identifier}.#{domain_name}"))
   end
 

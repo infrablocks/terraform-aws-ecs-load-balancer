@@ -8,11 +8,11 @@ describe 'Security Groups' do
     subject {security_group("elb-#{component}-#{deployment_identifier}")}
 
     it {should exist}
-    its(:vpc_id) {should eq(output_with_name('vpc_id'))}
+    its(:vpc_id) {should eq(output_for(:prerequisites, 'vpc_id'))}
     its(:description) {should eq("ELB for component: #{component}, service: #{vars.service_name}, deployment: #{deployment_identifier}")}
 
     it 'outputs the open to ELB security group ID' do
-      expect(output_with_name('security_group_id'))
+      expect(output_for(:harness, 'security_group_id'))
           .to(eq(subject.id))
     end
 
@@ -41,7 +41,7 @@ describe 'Security Groups' do
         expect(egress_rule.to_port).to(eq(65535))
         expect(egress_rule.ip_protocol).to(eq('tcp'))
         expect(egress_rule.ip_ranges.map(&:cidr_ip))
-            .to(eq([output_with_name('vpc_cidr')]))
+            .to(eq([output_for(:prerequisites, 'vpc_cidr')]))
       end
     end
 
@@ -73,11 +73,11 @@ describe 'Security Groups' do
     end
 
     it { should exist }
-    its(:vpc_id) {should eq(output_with_name('vpc_id'))}
+    its(:vpc_id) {should eq(output_for(:prerequisites, 'vpc_id'))}
     its(:description) {should eq("Open to ELB for component: #{component}, service: #{vars.service_name}, deployment: #{deployment_identifier}")}
 
     it 'outputs the open to load balancer security group ID' do
-      expect(output_with_name('open_to_load_balancer_security_group_id'))
+      expect(output_for(:harness, 'open_to_load_balancer_security_group_id'))
           .to(eq(subject.id))
     end
 
