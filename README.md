@@ -37,7 +37,7 @@ configuration:
 ```hcl-terraform
 module "ecs_load_balancer" {
   source = "infrablocks/ecs-load-balancer/aws"
-    version = "0.1.10"
+  version = "0.1.10"
 
   region = "eu-west-2"
   vpc_id = "vpc-fb7dc365"
