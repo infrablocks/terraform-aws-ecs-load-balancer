@@ -23,3 +23,9 @@ variable "include_public_dns_record" {}
 variable "include_private_dns_record" {}
 
 variable "expose_to_public_internet" {}
+
+variable "access_logs_bucket" {}
+variable "access_logs_bucket_prefix" {}
+variable "access_logs_interval" {}
+
+variable "store_access_logs" {}

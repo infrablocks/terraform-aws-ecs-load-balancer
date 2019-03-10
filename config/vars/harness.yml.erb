@@ -32,3 +32,9 @@ include_public_dns_record: 'no'
 include_private_dns_record: 'yes'
 
 expose_to_public_internet: 'no'
+
+access_logs_bucket: 'ecs-load-balancer-<%= @deployment_identifier %>'
+access_logs_bucket_prefix: 'test-<%= @deployment_identifier %>'
+access_logs_interval: 5
+
+store_access_logs: 'no'

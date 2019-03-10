@@ -4,6 +4,10 @@ describe 'ECS Service ELB' do
   let(:component) { vars.component }
   let(:deployment_identifier) { vars.deployment_identifier }
 
+  let(:access_logs_bucket) { vars.access_logs_bucket }
+  let(:access_logs_bucket_prefix) { vars.access_logs_bucket_prefix }
+  let(:access_logs_interval) { vars.access_logs_interval }
+
   let(:name) { output_for(:harness, 'name') }
 
   subject {elb(name)}
@@ -84,6 +88,47 @@ describe 'ECS Service ELB' do
 
       expect(connection_settings_attribute.idle_timeout)
           .to(eq(60))
+    end
+  end
+
+  context 'access logs' do
+    subject do
+      elb_client
+          .describe_load_balancer_attributes(load_balancer_name: name)
+          .load_balancer_attributes
+    end
+
+    context 'when disabled' do
+      before(:all) do
+        reprovision(store_access_logs: 'no')
+      end
+
+      it 'has no access log storage' do
+        expect(subject.access_log.enabled).to(eq(false))
+      end
+    end
+
+    context 'when enabled' do
+      before(:all) do
+        reprovision(store_access_logs: 'yes')
+      end
+
+      it 'has access log storage' do
+        expect(subject.access_log.enabled).to(eq(true))
+      end
+
+      it 'uses the provided bucket name' do
+        expect(subject.access_log.s3_bucket_name).to(eq(access_logs_bucket))
+      end
+
+      it 'uses the provided bucket prefix' do
+        expect(subject.access_log.s3_bucket_prefix)
+            .to(eq(access_logs_bucket_prefix))
+      end
+
+      it 'uses the provided interval' do
+        expect(subject.access_log.emit_interval).to(eq(access_logs_interval))
+      end
     end
   end
 

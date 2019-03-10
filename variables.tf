@@ -64,3 +64,21 @@ variable "expose_to_public_internet" {
   description = "Whether or not the ELB is publicly accessible (\"yes\" or \"no\")."
   default = "no"
 }
+
+variable "access_logs_bucket" {
+  description = ""
+  default = ""
+}
+variable "access_logs_bucket_prefix" {
+  description = ""
+  default = ""
+}
+variable "access_logs_interval" {
+  description = ""
+  default = 60
+}
+
+variable "store_access_logs" {
+  description = "Whether or not access logs of the ELB should be stored."
+  default = "no"
+}
