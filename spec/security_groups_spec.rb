@@ -60,7 +60,7 @@ describe 'Security Groups' do
         expect(egress_rule.to_port).to(eq(65535))
         expect(egress_rule.ip_protocol).to(eq('tcp'))
         expect(egress_rule.ip_ranges.map(&:cidr_ip))
-            .to(eq(['10.0.0.0/8', '192.168.0.0/16']))
+            .to(eq(['192.168.0.0/16', '10.0.0.0/8']))
       end
     end
   end
