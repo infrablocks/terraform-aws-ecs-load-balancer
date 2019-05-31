@@ -1,5 +1,5 @@
 resource "aws_elb" "service" {
-  subnets = ["${var.subnet_ids}"]
+  subnets = "${var.subnet_ids}"
   security_groups = [
     "${aws_security_group.load_balancer.id}"
   ]
