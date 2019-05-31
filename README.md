@@ -209,6 +209,17 @@ To generate an SSH key pair:
 ssh-keygen -t rsa -b 4096 -C integration-test@example.com -N '' -f config/secrets/keys/bastion/ssh
 ```
 
+#### Generating an SSL certificate
+
+To generate an SSL certificate:
+
+```
+openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes \
+  -keyout config/secrets/certificates/ssl.key \
+  -out config/secrets/certificates/cert.pem \
+  -subj /CN=example.com -addext subjectAltName=DNS:example.com,DNS:example.net,IP:10.0.0.1
+```
+
 #### Managing CircleCI keys
 
 To encrypt a GPG key for use by CircleCI:

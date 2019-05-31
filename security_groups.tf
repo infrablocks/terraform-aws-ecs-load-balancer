@@ -11,7 +11,7 @@ resource "aws_security_group" "load_balancer" {
     from_port = 443
     to_port = 443
     protocol = "tcp"
-    cidr_blocks = ["${var.allow_cidrs}"]
+    cidr_blocks = "${var.allow_cidrs}"
   }
 
   egress {

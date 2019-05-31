@@ -27,7 +27,7 @@ resource "aws_elb" "service" {
     interval = 30
   }
 
-  tags {
+  tags = {
     Name = "elb-${var.component}-${var.deployment_identifier}"
     Component = "${var.component}"
     DeploymentIdentifier = "${var.deployment_identifier}"
