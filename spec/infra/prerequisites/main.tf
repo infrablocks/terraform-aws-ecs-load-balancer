@@ -30,7 +30,7 @@ resource "aws_s3_bucket" "access_logs_bucket" {
 data "template_file" "access_logs_bucket_policy" {
   template = "${file("${path.root}/policies/bucket-policy.json.tpl")}"
 
-  vars {
+  vars = {
     bucket_name = "${var.access_logs_bucket}"
     bucket_prefix = "${var.access_logs_bucket_prefix}"
     account_id = "${data.aws_caller_identity.current.account_id}"
