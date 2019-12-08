@@ -1,5 +1,13 @@
 data "aws_caller_identity" "current" {}
 
+data "terraform_remote_state" "permanent" {
+  backend = "local"
+
+  config = {
+    path = "${path.module}/../../../../state/permanent.tfstate"
+  }
+}
+
 module "base_network" {
   source  = "infrablocks/base-networking/aws"
   version = "2.0.0"
@@ -12,12 +20,6 @@ module "base_network" {
   deployment_identifier = var.deployment_identifier
 
   private_zone_id = var.private_zone_id
-}
-
-resource "aws_iam_server_certificate" "service" {
-  name = "wildcard-certificate-${var.component}-${var.deployment_identifier}"
-  private_key = file(var.service_certificate_private_key)
-  certificate_body = file(var.service_certificate_body)
 }
 
 resource "aws_s3_bucket" "access_logs_bucket" {

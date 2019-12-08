@@ -11,5 +11,5 @@ output "subnet_ids" {
 }
 
 output "certificate_arn" {
-  value = aws_iam_server_certificate.service.arn
+  value = data.terraform_remote_state.permanent.outputs.certificate_arn
 }

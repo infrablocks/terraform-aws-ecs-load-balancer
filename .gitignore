@@ -30,3 +30,4 @@ run/logs/
 .terraform
 *.tfstate
 *.tfstate.backup
+!state/permanent.tfstate
