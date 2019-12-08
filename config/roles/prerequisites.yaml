@@ -1,0 +1,19 @@
+---
+source_directory: "spec/infra/prerequisites"
+state_file: "%{hiera('project_directory')}/state/prerequisites.tfstate"
+vars:
+  region: "%{hiera('region')}"
+
+  vpc_cidr: "%{hiera('vpc_cidr')}"
+  availability_zones: "%{hiera('availability_zones')}"
+
+  component: "%{hiera('component')}"
+  deployment_identifier: "%{hiera('deployment_identifier')}"
+
+  private_zone_id: "%{hiera('private_zone_id')}"
+
+  service_certificate_body: "%{hiera('service_certificate_body')}"
+  service_certificate_private_key: "%{hiera('service_certificate_private_key')}"
+
+  access_logs_bucket: "%{hiera('access_logs_bucket')}"
+  access_logs_bucket_prefix: "%{hiera('access_logs_bucket_prefix')}"

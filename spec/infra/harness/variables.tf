@@ -13,10 +13,10 @@ variable "private_zone_id" {}
 variable "health_check_target" {}
 
 variable "allow_cidrs" {
-  type = "list"
+  type = list(string)
 }
 variable "egress_cidrs" {
-  type = "list"
+  type = list(string)
 }
 
 variable "include_public_dns_record" {}

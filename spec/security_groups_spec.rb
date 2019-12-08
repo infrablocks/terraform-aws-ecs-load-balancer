@@ -24,7 +24,7 @@ describe 'Security Groups' do
       expect(ingress_rule.from_port).to(eq(443))
       expect(ingress_rule.to_port).to(eq(443))
       expect(ingress_rule.ip_protocol).to(eq('tcp'))
-      expect(ingress_rule.ip_ranges.map(&:cidr_ip)).to(eq(JSON.parse(vars.allow_cidrs)))
+      expect(ingress_rule.ip_ranges.map(&:cidr_ip)).to(eq(vars.allow_cidrs))
     end
 
     context 'when no egress CIDRs are supplied' do

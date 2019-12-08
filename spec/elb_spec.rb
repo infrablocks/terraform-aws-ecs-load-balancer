@@ -13,7 +13,10 @@ describe 'ECS Service ELB' do
   subject {elb(name)}
 
   it { should exist }
-  its(:subnets) { should contain_exactly(*output_for(:prerequisites, 'subnet_ids').split(',')) }
+  its(:subnets) {
+    should contain_exactly(
+        *output_for(:prerequisites, 'subnet_ids', parse: true))
+  }
   its(:scheme) { should eq('internal') }
 
   its(:health_check_target) { should eq(vars.health_check_target) }

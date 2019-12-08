@@ -1,13 +1,13 @@
 variable "region" {}
 variable "vpc_cidr" {}
-variable "availability_zones" {}
+variable "availability_zones" {
+  type = list(string)
+}
 
 variable "component" {}
 variable "deployment_identifier" {}
 
 variable "private_zone_id" {}
-
-variable "infrastructure_events_bucket" {}
 
 variable "service_certificate_body" {}
 variable "service_certificate_private_key" {}
@@ -16,7 +16,7 @@ variable "access_logs_bucket" {}
 variable "access_logs_bucket_prefix" {}
 
 variable "load_balancer_account_ids" {
-  type = "map"
+  type = map(string)
 
   default = {
     us-east-1 = "127311923021"

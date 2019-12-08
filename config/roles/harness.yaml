@@ -1,0 +1,31 @@
+---
+source_directory: "spec/infra/harness"
+state_file: "%{hiera('project_directory')}/state/harness.tfstate"
+vars:
+  region: "%{hiera('region')}"
+
+  component: "%{hiera('component')}"
+  deployment_identifier: "%{hiera('deployment_identifier')}"
+
+  domain_name: "%{hiera('domain_name')}"
+  public_zone_id: "%{hiera('public_zone_id')}"
+  private_zone_id: "%{hiera('private_zone_id')}"
+
+  service_name: "%{hiera('service_name')}"
+  service_port: "%{hiera('service_port')}"
+
+  health_check_target: "%{hiera('health_check_target')}"
+
+  allow_cidrs: "%{hiera('allow_cidrs')}"
+  egress_cidrs: "%{hiera('egress_cidrs')}"
+
+  include_public_dns_record: "%{hiera('include_public_dns_record')}"
+  include_private_dns_record: "%{hiera('include_private_dns_record')}"
+
+  expose_to_public_internet: "%{hiera('expose_to_public_internet')}"
+
+  access_logs_bucket: "%{hiera('access_logs_bucket')}"
+  access_logs_bucket_prefix: "%{hiera('access_logs_bucket_prefix')}"
+  access_logs_interval: "%{hiera('access_logs_interval')}"
+
+  store_access_logs: "%{hiera('store_access_logs')}"

@@ -1,0 +1,39 @@
+---
+region: 'eu-west-2'
+availability_zones:
+  - "eu-west-2a"
+  - "eu-west-2b"
+
+component: 'test'
+
+work_directory: 'build'
+configuration_directory: "%{hiera('work_directory')}/%{hiera('source_directory')}"
+
+vpc_cidr: "10.1.0.0/16"
+
+domain_name: 'greasedscone.uk'
+public_zone_id: 'Z4Q2X3ESOZT4N'
+private_zone_id: 'Z2CDAFD23Q10HO'
+
+allow_cidrs:
+  - "%{hiera('public_address')}/32"
+egress_cidrs: []
+
+service_name: 'service-1'
+service_port: 80
+
+service_certificate_body: "%{hiera('project_directory')}/config/secrets/certificates/cert.pem"
+service_certificate_private_key: "%{hiera('project_directory')}/config/secrets/certificates/ssl.key"
+
+health_check_target: "HTTP:80/"
+
+include_public_dns_record: 'no'
+include_private_dns_record: 'yes'
+
+expose_to_public_internet: 'no'
+
+access_logs_bucket: "ecs-load-balancer-%{hiera('deployment_identifier')}"
+access_logs_bucket_prefix: "test-%{hiera('deployment_identifier')}"
+access_logs_interval: 5
+
+store_access_logs: 'no'
