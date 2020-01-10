@@ -34,10 +34,13 @@ resource "aws_elb" "service" {
     Service = var.service_name
   }
 
-  access_logs {
-    bucket = var.access_logs_bucket
-    bucket_prefix = var.access_logs_bucket_prefix
-    interval = var.access_logs_interval
-    enabled = var.store_access_logs == "yes" ? true : false
+  dynamic "access_logs" {
+    for_each = var.access_logs_bucket != "" ? [1] : []
+    content {
+      bucket = var.access_logs_bucket
+      bucket_prefix = var.access_logs_bucket_prefix
+      interval = var.access_logs_interval
+      enabled = var.store_access_logs == "yes" ? true : false
+    }
   }
 }
