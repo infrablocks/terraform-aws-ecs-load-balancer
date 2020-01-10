@@ -111,16 +111,6 @@ describe 'ECS Service ELB' do
       end
     end
 
-    context 'without bucket name' do
-      before(:all) do
-        reprovision(access_logs_bucket: '')
-      end
-
-      it 'has no access log storage' do
-        expect(subject.access_log).to(eq(nil))
-      end
-    end
-
     context 'when enabled' do
       before(:all) do
         reprovision(store_access_logs: 'yes')
