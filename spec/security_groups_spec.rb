@@ -93,8 +93,8 @@ describe 'Security Groups' do
       end
 
       expect(permission).not_to(be(nil))
-      expect(permission.from_port).to(eq(vars.service_port))
-      expect(permission.to_port).to(eq(vars.service_port))
+      expect(permission.from_port).to(eq(vars.service_port.to_i))
+      expect(permission.to_port).to(eq(vars.service_port.to_i))
       expect(permission.ip_protocol).to(eq('tcp'))
     end
   end

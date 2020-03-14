@@ -6,7 +6,7 @@ describe 'ECS Service ELB' do
 
   let(:access_logs_bucket) { vars.access_logs_bucket }
   let(:access_logs_bucket_prefix) { vars.access_logs_bucket_prefix }
-  let(:access_logs_interval) { vars.access_logs_interval }
+  let(:access_logs_interval) { vars.access_logs_interval.to_i }
 
   let(:name) { output_for(:harness, 'name') }
 
@@ -29,7 +29,7 @@ describe 'ECS Service ELB' do
                  protocol: 'HTTPS',
                  port: 443,
                  instance_protocol: 'HTTP',
-                 instance_port: vars.service_port)}
+                 instance_port: vars.service_port.to_i)}
 
   it 'outputs the zone ID' do
     expect(output_for(:harness, 'zone_id'))
