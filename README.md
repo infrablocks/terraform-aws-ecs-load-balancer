@@ -223,7 +223,10 @@ To generate an SSL certificate:
 openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes \
   -keyout config/secrets/certificates/ssl.key \
   -out config/secrets/certificates/cert.pem \
-  -subj /CN=example.com -addext subjectAltName=DNS:example.com,DNS:example.net,IP:10.0.0.1
+  -subj /CN=example.com \
+  -reqexts SAN \
+  -config <(cat /etc/ssl/openssl.cnf \
+    <(printf "\n[SAN]\nsubjectAltName=DNS:example.com,DNS:www.example.com,IP:10.0.0.1"))
 ```
 
 #### Managing CircleCI keys
