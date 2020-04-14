@@ -13,7 +13,7 @@ resource "aws_elb" "service" {
 
   listener {
     instance_port = var.service_port
-    instance_protocol = "http"
+    instance_protocol = var.service_protocol
     lb_port = 443
     lb_protocol = "https"
     ssl_certificate_id = var.service_certificate_arn

@@ -23,6 +23,7 @@ variable "include_public_dns_record" {}
 variable "include_private_dns_record" {}
 
 variable "expose_to_public_internet" {}
+variable "service_protocol" {}
 
 variable "access_logs_bucket" {}
 variable "access_logs_bucket_prefix" {}

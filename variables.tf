@@ -79,6 +79,12 @@ variable "expose_to_public_internet" {
   default = "no"
 }
 
+variable "service_protocol" {
+  description = "Service protocol to use (\"http\" or \"https\")."
+  type = string
+  default = "http"
+}
+
 variable "access_logs_bucket" {
   description = ""
   type = string

@@ -31,6 +31,7 @@ include_public_dns_record: 'no'
 include_private_dns_record: 'yes'
 
 expose_to_public_internet: 'no'
+service_protocol: 'http'
 
 access_logs_bucket: "ecs-load-balancer-%{hiera('deployment_identifier')}"
 access_logs_bucket_prefix: "test-%{hiera('deployment_identifier')}"

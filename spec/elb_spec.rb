@@ -150,4 +150,16 @@ describe 'ECS Service ELB' do
 
     its(:scheme) {should eq('internal')}
   end
+
+  context 'when service protocol is set' do
+    before(:all) do
+      reprovision(service_protocol: 'https')
+    end
+
+    it {should have_listener(
+        protocol: 'HTTPS',
+        port: 443,
+        instance_protocol: 'HTTPS',
+        instance_port: vars.service_port.to_i)}
+  end
 end

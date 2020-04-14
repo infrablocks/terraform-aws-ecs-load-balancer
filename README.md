@@ -104,6 +104,7 @@ for usage instructions.
 | include_public_dns_record            | Whether or not to create a public DNS record ("yes" or "no")   | "no"                | yes      |
 | include_private_dns_record           | Whether or not to create a private DNS record ("yes" or "no")  | "yes"               | yes      |
 | expose_to_public_internet            | Whether or not the ELB is publicly accessible ("yes" or "no")  | "no"                | yes      |
+| service_protocol                     | Service protocol to use ("http" or "https")                    | "http"              | no       |
 
 
 ### Outputs

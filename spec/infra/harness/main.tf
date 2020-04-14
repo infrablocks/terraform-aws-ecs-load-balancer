@@ -34,6 +34,7 @@ module "ecs_load_balancer" {
   include_private_dns_record = var.include_private_dns_record
 
   expose_to_public_internet = var.expose_to_public_internet
+  service_protocol = var.service_protocol
 
   access_logs_bucket = var.access_logs_bucket
   access_logs_bucket_prefix = var.access_logs_bucket_prefix

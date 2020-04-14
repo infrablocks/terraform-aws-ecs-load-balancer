@@ -23,6 +23,7 @@ vars:
   include_private_dns_record: "%{hiera('include_private_dns_record')}"
 
   expose_to_public_internet: "%{hiera('expose_to_public_internet')}"
+  service_protocol: "%{hiera('service_protocol')}"
 
   access_logs_bucket: "%{hiera('access_logs_bucket')}"
   access_logs_bucket_prefix: "%{hiera('access_logs_bucket_prefix')}"
