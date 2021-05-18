@@ -14,8 +14,7 @@ describe 'ECS Service ELB' do
 
   it { should exist }
   its(:subnets) {
-    should contain_exactly(
-        *output_for(:prerequisites, 'subnet_ids'))
+    should contain_exactly(output_for(:prerequisites, 'subnet_ids'))
   }
   its(:scheme) { should eq('internal') }
 
