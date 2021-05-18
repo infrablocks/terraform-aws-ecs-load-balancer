@@ -63,7 +63,7 @@ namespace :keys do
         name_prefix: 'gpg',
         owner_name: 'InfraBlocks Maintainers',
         owner_email: 'maintainers@infrablocks.io',
-        owner_comment: 'terraform-aws-admin CI Key')
+        owner_comment: 'terraform-aws-ecs-load-balancer CI Key')
     end
 
     task generate: ['gpg:generate']
