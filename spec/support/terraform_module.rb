@@ -4,19 +4,18 @@ require 'ostruct'
 require_relative '../../lib/configuration'
 
 module TerraformModule
-  class <<self
+  class << self
     def configuration
       @configuration ||= Configuration.new
     end
 
-    def output_for(role, name, opts = {})
+    def output_for(role, name)
       params = {
-          name: name,
-          state: configuration.for(role).state_file,
-          json: opts[:parse]
+        name: name,
+        state: configuration.for(role).state_file,
       }
       value = RubyTerraform.output(params)
-      opts[:parse] ? JSON.parse(value, symbolize_names: true) : value
+      JSON.parse(value, symbolize_names: true)
     end
 
     def provision_for(role, overrides = nil)
@@ -31,21 +30,22 @@ module TerraformModule
         puts
 
         RubyTerraform.apply(
+            chdir: configuration.configuration_directory,
             state: configuration.state_file,
-            directory: '.',
             vars: configuration.vars.to_h,
+            input: false,
             auto_approve: true)
 
         puts
       end
     end
 
-    def destroy_for(role, overrides = nil)
-      destroy(configuration.for(role, overrides))
+    def destroy_for(role, overrides = nil, opts = {})
+      destroy(configuration.for(role, overrides), opts)
     end
 
-    def destroy(configuration)
-      unless ENV['DEPLOYMENT_IDENTIFIER']
+    def destroy(configuration, opts = {})
+      if opts[:force] || !ENV['DEPLOYMENT_IDENTIFIER']
         with_clean_directory(configuration) do
           puts
           puts "Destroying with deployment identifier: " +
@@ -53,10 +53,11 @@ module TerraformModule
           puts
 
           RubyTerraform.destroy(
+              chdir: configuration.configuration_directory,
               state: configuration.state_file,
-              directory: '.',
               vars: configuration.vars.to_h,
-              force: true)
+              input: false,
+              auto_approve: true)
 
           puts
         end
@@ -66,16 +67,14 @@ module TerraformModule
     private
 
     def with_clean_directory(configuration)
-      FileUtils.rm_rf(File.dirname(configuration.configuration_directory))
-      FileUtils.mkdir_p(File.dirname(configuration.configuration_directory))
-      FileUtils.cp_r(
-          configuration.source_directory,
-          configuration.configuration_directory)
+      FileUtils.rm_rf(configuration.configuration_directory)
+      FileUtils.mkdir_p(configuration.configuration_directory)
 
-      Dir.chdir(configuration.configuration_directory) do
-        RubyTerraform.init
-        yield configuration
-      end
+      RubyTerraform.init(
+        chdir: configuration.configuration_directory,
+        from_module: File.join(FileUtils.pwd, configuration.source_directory),
+        input: false)
+      yield configuration
     end
   end
 end
