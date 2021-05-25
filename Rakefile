@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'git'
 require 'yaml'
 require 'semantic'
@@ -15,7 +17,7 @@ require_relative 'lib/version'
 configuration = Configuration.new
 
 def repo
-  Git.open('.')
+  Git.open(Pathname.new('.'))
 end
 
 def latest_tag
@@ -24,16 +26,21 @@ def latest_tag
   end.max
 end
 
-task :default => 'test:integration'
+task default: 'test:integration'
 
 RakeTerraform.define_installation_tasks(
   path: File.join(Dir.pwd, 'vendor', 'terraform'),
-  version: '0.15.3'
-)
+  version: '0.15.3')
 
 namespace :encryption do
+  namespace :directory do
+    task :ensure do
+      FileUtils.mkdir_p('config/secrets/ci')
+    end
+  end
+
   namespace :passphrase do
-    task :generate do
+    task generate: ["directory:ensure"] do
       File.open('config/secrets/ci/encryption.passphrase', 'w') do |f|
         f.write(SecureRandom.base64(36))
       end
@@ -70,6 +77,15 @@ namespace :keys do
   end
 end
 
+namespace :secrets do
+  task regenerate: %w[
+    encryption:passphrase:generate
+    keys:deploy:generate
+    keys:cluster:generate
+    keys:secrets:generate
+  ]
+end
+
 RakeCircleCI.define_project_tasks(
   namespace: :circle_ci,
   project_slug: 'github/infrablocks/terraform-aws-ecs-load-balancer'
@@ -85,7 +101,7 @@ RakeCircleCI.define_project_tasks(
   }
   t.ssh_keys = [
     {
-      hostname: "github.com",
+      hostname: 'github.com',
       private_key: File.read('config/secrets/ci/ssh.private')
     }
   ]
@@ -98,7 +114,7 @@ RakeGithub.define_repository_tasks(
   github_config =
     YAML.load_file('config/secrets/github/config.yaml')
 
-  t.access_token = github_config["github_personal_access_token"]
+  t.access_token = github_config['github_personal_access_token']
   t.deploy_keys = [
     {
       title: 'CircleCI',
@@ -166,8 +182,7 @@ namespace :deployment do
       configuration_name: 'harness',
       argument_names: [:deployment_identifier]
     ) do |t, args|
-      deployment_configuration =
-          configuration.for(:harness, args)
+      deployment_configuration = configuration.for(:harness, args)
 
       t.source_directory = deployment_configuration.source_directory
       t.work_directory = deployment_configuration.work_directory
