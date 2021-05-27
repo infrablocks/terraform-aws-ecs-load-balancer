@@ -28,12 +28,6 @@ The ECS load balancer consists of:
 
 ![Diagram of infrastructure managed by this module](https://raw.githubusercontent.com/infrablocks/terraform-aws-ecs-load-balancer/master/docs/architecture.png)
 
-### Terraform versions
-
-Terraform 0.12. Pin module version to `~> 1.0`. Submit pull-requests to `master` branch.
-
-Terraform 0.11. Pin module version to `~> 0.5.0`. Submit pull-requests to `terraform011` branch.
-
 Usage
 -----
 
@@ -82,6 +76,9 @@ module will create everything you need. See the
 [docs](https://github.com/tobyclemson/terraform-aws-base-networking/blob/master/README.md)
 for usage instructions.
 
+See the 
+[Terraform registry entry](https://registry.terraform.io/modules/infrablocks/ecs-load-balancer/aws/latest) 
+for more details.
 
 ### Inputs
 
@@ -117,6 +114,10 @@ for usage instructions.
 | security_group_id                       | The ID of the security group associated with the ELB                 |
 | open_to_load_balancer_security_group_id | The ID of the security group allowing access from the ELB            |
 
+### Compatibility
+
+This module is compatible with Terraform versions greater than or equal to 
+Terraform 0.14.
 
 Development
 -----------
