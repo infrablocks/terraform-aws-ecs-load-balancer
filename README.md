@@ -26,7 +26,7 @@ The ECS load balancer consists of:
   * In the public hosted zone if requested
   * In the private hosted zone if requested
 
-![Diagram of infrastructure managed by this module](https://raw.githubusercontent.com/infrablocks/terraform-aws-ecs-load-balancer/master/docs/architecture.png)
+![Diagram of infrastructure managed by this module](https://raw.githubusercontent.com/infrablocks/terraform-aws-ecs-load-balancer/main/docs/architecture.png)
 
 Usage
 -----
@@ -73,7 +73,7 @@ network. Whilst the base network can be created using any mechanism you like,
 the 
 [AWS Base Networking](https://github.com/infrablocks/terraform-aws-base-networking)
 module will create everything you need. See the 
-[docs](https://github.com/infrablocks/terraform-aws-base-networking/blob/master/README.md)
+[docs](https://github.com/infrablocks/terraform-aws-base-networking/blob/main/README.md)
 for usage instructions.
 
 See the 
