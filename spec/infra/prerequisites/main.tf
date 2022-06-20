@@ -27,18 +27,21 @@ resource "aws_s3_bucket" "access_logs_bucket" {
   force_destroy = true
 }
 
-data "template_file" "access_logs_bucket_policy" {
-  template = file("${path.root}/policies/bucket-policy.json.tpl")
-
-  vars = {
-    bucket_name = var.access_logs_bucket
-    bucket_prefix = var.access_logs_bucket_prefix
-    account_id = data.aws_caller_identity.current.account_id
-    load_balancer_account_id = lookup(var.load_balancer_account_ids, var.region)
+data "aws_iam_policy_document" "access_logs_bucket_policy" {
+  statement {
+    actions = ["s3:PutObject"]
+    effect = "Allow"
+    resources = [
+      "arn:aws:s3:::${var.access_logs_bucket}/${var.access_logs_bucket_prefix}/AWSLogs/${data.aws_caller_identity.current.account_id}/*"
+    ]
+    principals {
+      identifiers = [lookup(var.load_balancer_account_ids, var.region)]
+      type        = "AWS"
+    }
   }
 }
 
 resource "aws_s3_bucket_policy" "access_logs_bucket" {
   bucket = aws_s3_bucket.access_logs_bucket.id
-  policy = data.template_file.access_logs_bucket_policy.rendered
+  policy = data.aws_iam_policy_document.access_logs_bucket_policy.json
 }
