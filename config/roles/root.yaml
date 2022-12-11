@@ -1,0 +1,17 @@
+---
+configuration_directory: "%{cwd}/spec/unit/infra/root"
+state_file: "%{cwd}/state/root.tfstate"
+vars:
+  region: "%{hiera('region')}"
+
+  component: "%{hiera('component')}"
+  deployment_identifier: "%{hiera('deployment_identifier')}"
+
+  domain_name: "%{hiera('domain_name')}"
+  public_zone_id: "%{hiera('public_zone_id')}"
+  private_zone_id: "%{hiera('private_zone_id')}"
+
+  service_name: "%{hiera('service_name')}"
+  service_port: "%{hiera('service_port')}"
+
+  allow_cidrs: "%{hiera('allow_cidrs')}"

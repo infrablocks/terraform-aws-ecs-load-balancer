@@ -18,7 +18,7 @@ resource "aws_security_group" "load_balancer" {
     from_port = 1
     to_port = 65535
     protocol = "tcp"
-    cidr_blocks = coalescelist(var.egress_cidrs, [data.aws_vpc.network.cidr_block])
+    cidr_blocks = coalescelist(local.egress_cidrs, [data.aws_vpc.network.cidr_block])
   }
 }
 

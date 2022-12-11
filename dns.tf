@@ -3,7 +3,7 @@ resource "aws_route53_record" "service_public" {
   name = "${var.component}-${var.deployment_identifier}.${var.domain_name}"
   type = "A"
 
-  count = var.include_public_dns_record == "yes" ? 1 : 0
+  count = local.include_public_dns_record == "yes" ? 1 : 0
 
   alias {
     name = aws_elb.service.dns_name
@@ -17,7 +17,7 @@ resource "aws_route53_record" "service_private" {
   name = "${var.component}-${var.deployment_identifier}.${var.domain_name}"
   type = "A"
 
-  count = var.include_private_dns_record == "yes" ? 1 : 0
+  count = local.include_private_dns_record == "yes" ? 1 : 0
 
   alias {
     name = aws_elb.service.dns_name

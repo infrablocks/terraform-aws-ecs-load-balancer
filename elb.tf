@@ -4,7 +4,7 @@ resource "aws_elb" "service" {
     aws_security_group.load_balancer.id
   ]
 
-  internal = var.expose_to_public_internet == "yes" ? false : true
+  internal = local.expose_to_public_internet == "yes" ? false : true
 
   cross_zone_load_balancing = true
   idle_timeout = 60
@@ -23,7 +23,7 @@ resource "aws_elb" "service" {
     healthy_threshold = 2
     unhealthy_threshold = 2
     timeout = 3
-    target = var.health_check_target
+    target = local.health_check_target
     interval = 30
   }
 
@@ -35,12 +35,12 @@ resource "aws_elb" "service" {
   }
 
   dynamic "access_logs" {
-    for_each = var.access_logs_bucket != "" ? [1] : []
+    for_each = local.access_logs_bucket != "" ? [1] : []
     content {
-      bucket = var.access_logs_bucket
-      bucket_prefix = var.access_logs_bucket_prefix
-      interval = var.access_logs_interval
-      enabled = var.store_access_logs == "yes" ? true : false
+      bucket = local.access_logs_bucket
+      bucket_prefix = local.access_logs_bucket_prefix
+      interval = local.access_logs_interval
+      enabled = local.store_access_logs == "yes" ? true : false
     }
   }
 }
