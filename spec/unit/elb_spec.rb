@@ -42,7 +42,7 @@ describe 'ELB' do
     it 'uses the provided subnets' do
       expect(@plan)
         .to(include_resource_creation(type: 'aws_elb')
-              .with_attribute_value(:subnets, contain_exactly(*subnet_ids)))
+              .with_attribute_value(:subnets, match_array(subnet_ids)))
     end
 
     it 'marks the load balancer as internal' do

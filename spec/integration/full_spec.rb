@@ -97,7 +97,7 @@ describe 'full' do
     it { is_expected.to(exist) }
 
     its(:subnets) do
-      is_expected.to(contain_exactly(*output(role: :full, name: 'subnet_ids')))
+      is_expected.to(match_array(output(role: :full, name: 'subnet_ids')))
     end
 
     its(:scheme) { is_expected.to(eq('internal')) }
