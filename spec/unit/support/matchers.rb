@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'json'
-require 'set'
 
 RSpec::Matchers.define :a_policy_with_statement do |expected_statement|
   def normalise(statement)
